@@ -33,4 +33,5 @@ else:
     save_config()
     exit()
 
-save_config()
+if __name__ == "__main__":
+    save_config()
