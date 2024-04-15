@@ -10,17 +10,22 @@ ENV PIP_DEFAULT_TIMEOUT=100 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
     PIP_NO_CACHE_DIR=1
 
-COPY plexdlweb ./plexdlweb
+COPY . .
 
 RUN addgroup -S plexdlweb \
     && adduser -S plexdlweb -G plexdlweb
 
-RUN addgroup -S plexdlweb \
-    && adduser -S plexdlweb -G plexdlweb
+RUN sh -c "pip install -r requirements.txt"
+
+ENV CONFIG_PATH="/config/config.json"
+
+RUN mkdir /config
+RUN python config.py
 
 RUN chown -R plexdlweb .
+RUN chown -R plexdlweb "$CONFIG_PATH"
+
+EXPOSE 8766
 
 USER plexdlweb
-RUN sh -c "pip3 install -r plexdlweb/requirements.txt && python plexdlweb/__main__.py"
-
-ENTRYPOINT ["python plexdlweb/__main__.py"]
+ENTRYPOINT ["python", "__main__.py"]

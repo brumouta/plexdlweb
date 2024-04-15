@@ -3,6 +3,7 @@ from dataclasses_json import dataclass_json
 import os
 import uuid
 
+CONFIG_PATH = os.getenv("CONFIG_PATH", "config.json")
 
 @dataclass_json
 @dataclass
@@ -16,12 +17,12 @@ class Config:
     secret: str = field(default_factory=lambda: str(uuid.uuid4()))
 
 def save_config():
-    with open("config.json", "w") as config_file:
+    with open(CONFIG_PATH, "w") as config_file:
         config_file.write(config.to_json())
 
-if os.path.exists("config.json"):
+if os.path.exists(CONFIG_PATH):
     try:
-        with open("config.json", "r") as config_file:
+        with open(CONFIG_PATH, "r") as config_file:
             config = Config.from_json(config_file.read())
     except Exception as e:
         print("Error while reading config.json")
